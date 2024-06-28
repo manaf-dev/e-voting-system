@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Ballots{% endblock title %}
+
+{% block content %}
+<h3>Vote for {{ position.name }}</h3>
+
+{% for president in presidents %}
+<form action="{% url 'vote' candidate_id=president.id election_id=election.id %}" method="post">
+    {% csrf_token %}
+
+    <h5>{{ president.user.get_full_name }}</h5>
+    <button>Vote</button>
+    <hr />
+
+</form>
+
+{%empty%}
+<p>No contestant for this position</p>
+<a href="">Next</a>
+{% endfor %}
+
+{% endblock content %}

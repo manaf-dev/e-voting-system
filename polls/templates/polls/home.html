@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock title %}
+
+{% block content %}
+
+{% for election in elections %}
+<div class="election-card">
+    <h3>{{election.name}}</h3>
+    <p>{{election.description}}</p>
+    <a href="{% url 'president-ballot' election.slug %}">Start Vote</a>
+</div>
+{% empty %}
+<p>There is not election yet. Check again later</p>
+{% endfor %}
+
+{% endblock content %}

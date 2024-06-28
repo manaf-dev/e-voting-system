@@ -8,6 +8,7 @@ from .models import Election, Position, Candidate, Vote
 @admin.register(Election)
 class ElectionAdmin(admin.ModelAdmin):
     list_display = ("name", "start_date", "end_date")
+    prepopulated_fields = {"slug": ("name",)}
 
 
 @admin.register(Position)

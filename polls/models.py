@@ -1,5 +1,6 @@
 from django.db import models
 from accounts.models import CustomUser
+from django.utils.text import slugify
 
 from PIL import Image
 
@@ -10,6 +11,11 @@ class Election(models.Model):
     description = models.TextField(blank=True)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
+    slug = models.SlugField(max_length=255, blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(Election, self).save(*args, **kwargs)  # Call the real save() method
 
     def __str__(self):
         return self.name
