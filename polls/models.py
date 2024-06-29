@@ -68,10 +68,13 @@ class Vote(models.Model):
         CustomUser, related_name="voters", on_delete=models.CASCADE
     )
     candidate = models.ForeignKey(
-        "Candidate", related_name="candidates", on_delete=models.CASCADE
+        "Candidate", related_name="votes", on_delete=models.CASCADE
     )
     election = models.ForeignKey(
         "Election", related_name="votes", on_delete=models.CASCADE
+    )
+    position = models.ForeignKey(
+        "Position", related_name="votes", on_delete=models.CASCADE, default=1
     )
     timestamp = models.DateTimeField(auto_now_add=True)
 
@@ -79,7 +82,7 @@ class Vote(models.Model):
         # unique_together = ('voter', 'position')
         constraints = [
             models.UniqueConstraint(
-                fields=["voter", "candidate", "election"], name="unique_voter_position"
+                fields=["voter", "election", "position"], name="unique_voter_position"
             )
         ]
 

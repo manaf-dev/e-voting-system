@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Ballots{% endblock title %}
+
+{% block content %}
+
+{% for page in page_obj %}
+
+<h3>Vote for {{ page.name }}</h3>
+
+{% for candidate in page.candidates.all %}
+<form action="{% url 'vote' candidate_id=candidate.id election_id=election.id position_id=page.id %}" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="ballot" value="{{ page_obj.number }}">
+    <h5>{{ candidate.user.get_full_name }}</h5>
+    <button>Vote</button>
+    <hr />
+
+</form>
+
+{%empty%}
+<p>No contestant for this position</p>
+<!-- <a href="">Next</a> -->
+{% endfor %}
+{% endfor %}
+
+
+<!-- {% if page_obj.has_next %}
+<a href="?ballot={{ page_obj.next_page_number }}">Next</a>
+{% endif %} -->
+
+
+{% endblock content %}
