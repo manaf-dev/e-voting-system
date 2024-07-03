@@ -5,19 +5,21 @@
 {% block content %}
 
 {% for election_status in elections_status %}
-
-
-<div class="election-card">
-    <h3>{{election_status.election.name}}</h3>
-    <p>{{election_status.election.description}}</p>
-
-    {% if election_status.status %}
-    <a href="{% url 'ballots' election.slug %}">View Votes</a>
-    {% else %}
-    <a href="{% url 'ballots' election.slug %}">Start vote</a>
-
-    {% endif %}
+<div class="container">
+    <div class="card mx-auto" style="width: 18rem;">
+        <img src="..." class="card-img-top" alt="...">
+        <div class="card-body">
+        <h5 class="card-title">{{election_status.election.name}}</h5>
+        <p class="card-text">{{election_status.election.description}}</p>
+        {% if election_status.status == True %}
+        <a href="{% url 'ballots' election_status.election.slug %}" class="btn btn-primary">View Votes</a>
+        {% else %}
+        <a href="{% url 'ballots' election_status.election.slug %}" class="btn btn-primary">Start vote</a>
+        {% endif %}
+        </div>
+    </div>
 </div>
+
 {% empty %}
 <p>There is no election yet. Check again later</p>
 {% endfor %}

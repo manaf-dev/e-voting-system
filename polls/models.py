@@ -20,11 +20,6 @@ class Election(models.Model):
     def __str__(self):
         return self.name
 
-    def has_user_finished_voting(self, user):
-        positions = Position.objects.filter(candidates__election=self).distinct().count()
-        user_votes = Vote.objects.filter(voter=user, election=self)
-        return positions == user_votes
-
 
 class Position(models.Model):
     name = models.CharField(max_length=255)

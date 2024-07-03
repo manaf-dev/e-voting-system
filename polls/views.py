@@ -24,12 +24,22 @@ class HomeView(ListView):
         elections_status = [
             {
                 "election": election,
-                "status": election.has_user_finished_voting(self.request.user),
+                "status": has_user_finished_voting(self.request.user.id, election.id),
             }
             for election in elections
         ]
         context["elections_status"] = elections_status
         return context
+
+
+def has_user_finished_voting(user, election):
+    positions = (
+        Position.objects.filter(candidates__election=election).distinct().count()
+    )
+    user_votes = Vote.objects.filter(voter=user, election=election).count()
+    if not positions or not user_votes:
+        return False
+    return positions == user_votes
 
 
 class BallotsView(ListView):
@@ -64,7 +74,7 @@ def vote(request, election_id, candidate_id, position_id):
             election=election,
             position=position,
         )
-        next_page = int(request.POST.get("ballot"))
+        next_page = request.POST.get("ballot")
         if not next_page:
             return redirect("vote-complete")
 
@@ -76,4 +86,4 @@ def vote(request, election_id, candidate_id, position_id):
 
 
 class VoteCompleteView(TemplateView):
-    template_name = "vote_complete.html"
+    template_name = "polls/vote_complete.html"
