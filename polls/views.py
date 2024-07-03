@@ -18,6 +18,19 @@ class HomeView(ListView):
         queryset = Election.objects.filter(end_date__gt=timezone.now())
         return queryset
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        elections = self.get_queryset()
+        elections_status = [
+            {
+                "election": election,
+                "status": election.has_user_finished_voting(self.request.user),
+            }
+            for election in elections
+        ]
+        context["elections_status"] = elections_status
+        return context
+
 
 class BallotsView(ListView):
     model = Position
@@ -51,8 +64,10 @@ def vote(request, election_id, candidate_id, position_id):
             election=election,
             position=position,
         )
-        current_page = int(request.POST.get("ballot", 1))
-        next_page = current_page + 1
+        next_page = int(request.POST.get("ballot"))
+        if not next_page:
+            return redirect("vote-complete")
+
         return redirect(
             reverse("ballots", kwargs={"election_slug": election.slug})
             + f"?ballot={next_page}"

@@ -20,6 +20,11 @@ class Election(models.Model):
     def __str__(self):
         return self.name
 
+    def has_user_finished_voting(self, user):
+        positions = Position.objects.filter(candidates__election=self).distinct().count()
+        user_votes = Vote.objects.filter(voter=user, election=self)
+        return positions == user_votes
+
 
 class Position(models.Model):
     name = models.CharField(max_length=255)
@@ -30,10 +35,10 @@ class Position(models.Model):
 
 class Candidate(models.Model):
     user = models.ForeignKey(
-        CustomUser, verbose_name="Candidate", on_delete=models.CASCADE, default=1
+        CustomUser, verbose_name="Candidate", on_delete=models.CASCADE
     )
     election = models.ForeignKey(
-        "Election", related_name="candidates", on_delete=models.CASCADE, default=1
+        "Election", related_name="candidates", on_delete=models.CASCADE
     )
     position = models.ForeignKey(
         "Position", related_name="candidates", on_delete=models.CASCADE
@@ -74,7 +79,7 @@ class Vote(models.Model):
         "Election", related_name="votes", on_delete=models.CASCADE
     )
     position = models.ForeignKey(
-        "Position", related_name="votes", on_delete=models.CASCADE, default=1
+        "Position", related_name="votes", on_delete=models.CASCADE
     )
     timestamp = models.DateTimeField(auto_now_add=True)
 

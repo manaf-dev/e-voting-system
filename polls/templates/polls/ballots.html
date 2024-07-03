@@ -11,7 +11,12 @@
 {% for candidate in page.candidates.all %}
 <form action="{% url 'vote' candidate_id=candidate.id election_id=election.id position_id=page.id %}" method="post">
     {% csrf_token %}
-    <input type="hidden" name="ballot" value="{{ page_obj.number }}">
+    
+    {% if page_obj.has_next %}
+    <input type="hidden" name="ballot" value="{{ page_obj.next_page_number }}">
+        
+    {% endif %}
+        
     <h5>{{ candidate.user.get_full_name }}</h5>
     <button>Vote</button>
     <hr />
