@@ -4,24 +4,38 @@
 
 {% block content %}
 
-{% for election_status in elections_status %}
-<div class="container">
-    <div class="card mx-auto" style="width: 18rem;">
-        <img src="..." class="card-img-top" alt="...">
+
+<div class="row home-row row-cols-1 d-flex flex-column w-max-content m-auto mt-5 text-center">
+    <div class="col">
+        <h1>GMSA Voting Hub</h1>
+    </div>
+    {% for election_status in elections_status %}
+    <div class="col mt-3">
+      <div class="card mb-4 rounded-3 shadow-sm border-success">
+        <div class="card-header py-3 text-bg-success border-success">
+          <h4 class="my-0 fw-normal">In-Progress Election</h4>
+        </div>
         <div class="card-body">
-        <h5 class="card-title">{{election_status.election.name}}</h5>
-        <p class="card-text">{{election_status.election.description}}</p>
-        {% if election_status.status == True %}
-        <a href="{% url 'ballots' election_status.election.slug %}" class="btn btn-primary">View Votes</a>
-        {% else %}
-        <a href="{% url 'ballots' election_status.election.slug %}" class="btn btn-primary">Start vote</a>
-        {% endif %}
+          <h1 class="card-title">{{election_status.election.name}}</h1>
+          <p class="mt-3 mb-4 text-muted">
+            {{election_status.election.description}}
+            {% lorem 1 b random %}
+
+          </p>
+          {% if election_status.status == True %}
+          
+          <a href="{% url 'ballots' election_status.election.slug %}" class="w-100 btn btn-lg btn-outline-success">View Results</a>
+          
+          {% else %}
+          
+          <a href="{% url 'ballots' election_status.election.slug %}" class="w-100 btn btn-lg btn-success">Start Voting</a>
+          
+          {% endif %}
         </div>
     </div>
+    {% empty %}
+    <p>There is no election yet. Check again later</p>
+    {% endfor %}
 </div>
-
-{% empty %}
-<p>There is no election yet. Check again later</p>
-{% endfor %}
 
 {% endblock content %}

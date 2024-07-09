@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% load static %}
 
 {% block title %}Ballots{% endblock title %}
 
@@ -9,6 +9,16 @@
 <h3>Vote for {{ page.name }}</h3>
 
 {% for candidate in page.candidates.all %}
+
+<div class="card" style="width: 18rem;">
+    <img src="{{ candidate.profile_pic.url }}" class="card-img-top" alt="...">
+    <div class="card-body">
+      <h5 class="card-title">{{candidate.user.get_full_name}}</h5>
+      <a href="#" class="btn btn-primary">Vote</a>
+    </div>
+</div>
+
+
 <form action="{% url 'vote' candidate_id=candidate.id election_id=election.id position_id=page.id %}" method="post">
     {% csrf_token %}
     
@@ -30,9 +40,20 @@
 {% endfor %}
 
 
-<!-- {% if page_obj.has_next %}
-<a href="?ballot={{ page_obj.next_page_number }}">Next</a>
-{% endif %} -->
+{% if is_paginated %}
+    {% if page_obj.has_previous%}
+        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+    {% endif %}
+
+    {% if page_obj.number == num %}
+        <a class="btn btn-info mb-4" href="?ballot={{ num }}">{{num}}</a>
+    {% endif %}
+
+    {% if page_obj.has_next %}
+        <a class="btn btn-outline-info mb-4" href="?ballot={{ page_obj.next_page_number }}">Next</a>
+    {% endif %}
+
+{% endif %}
 
 
 {% endblock content %}
