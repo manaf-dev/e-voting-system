@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Preview Votes{% endblock title %}
+
+{% block content %}
+
+<h3>Preview Your Selections</h3>
+
+{% for position_id, candidate in selected_candidates.items %}
+    <p>{{ candidate.position.name }}: {{ candidate.user.get_full_name }}</p>
+{% endfor %}
+
+<form action="{% url 'submit-votes' election_slug=election.slug %}" method="post">
+    {% csrf_token %}
+    <button type="submit">Submit Votes</button>
+</form>
+
+<a href="{% url 'ballots' election.slug %}?ballot=1">Go Back to Ballots</a>
+
+{% endblock content %}

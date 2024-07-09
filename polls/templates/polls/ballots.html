@@ -4,11 +4,11 @@
 
 {% block content %}
 
-{% for page in page_obj %}
+{% for position in positions %}
 
-<h3>Vote for {{ page.name }}</h3>
+<h3>Vote for {{ position.name }}</h3>
 
-{% for candidate in page.candidates.all %}
+{% for candidate in position.candidates.all %}
 
 <div class="card" style="width: 18rem;">
     <img src="{{ candidate.profile_pic.url }}" class="card-img-top" alt="...">
@@ -19,8 +19,7 @@
 </div>
 
 
-<form action="{% url 'vote' candidate_id=candidate.id election_id=election.id position_id=page.id %}" method="post">
-    {% csrf_token %}
+<form action="{% url 'vote-candidate' election_slug=election.slug candidate_id=candidate.id  position_id=position.id %}" method="GET">
     
     {% if page_obj.has_next %}
     <input type="hidden" name="ballot" value="{{ page_obj.next_page_number }}">
