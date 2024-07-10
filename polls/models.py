@@ -45,11 +45,11 @@ class Candidate(models.Model):
     )
 
     def save(self, *args, **kwargs):
+        super(Candidate, self).save(*args, **kwargs)  # Call the real save() method
         img = Image.open(self.profile_pic.path)
         if img.height > 300 | img.width > 300:
             img.thumbnail((300, 300))
             img.save(self.profile_pic.path)
-        super(Candidate, self).save(*args, **kwargs)  # Call the real save() method
 
     class Meta:
         constraints = [
