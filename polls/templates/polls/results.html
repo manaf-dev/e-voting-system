@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Votes Results{% endblock title %}
+
+{% block content %}
+
+<h3 class="text-center text-bg-success p-3 w-50 m-auto">Votes Results for {{election.name}}</h3>
+
+{% for result in results %}
+<h4 class="text-center mt-3">{{ result.position.name }}</h4>
+
+    {% for candidate_result in result.candidates %}
+        <div class="card shadow-sm mx-auto mb-3" style="width: 20rem;">
+            <img src="{{ candidate_result.candidate.profile_pic.url }}" class="card-img-top object-fit-cover" height="300"></img>
+            <div class="card-body">
+                <h5 class="card-title text-center">{{candidate_result.candidate.user.get_full_name}}</h5>
+                <p class="card-text fo">Total Votes Cast: <span class="fw-bold">{{result.total_votes}}</span></p>
+                <p class="card-text fo">Total Votes Conceeded: <span class="fw-bold">{{candidate_result.vote_count}}</span></p>
+                <p class="card-text fo">Percentage: <span class="fw-bold">{{candidate_result.vote_percentage|floatformat:2}}%</span></p>
+
+                {% if candidate_result.is_winner %}
+                    <p class="fs-4 fw-bold text-success text-center">WINNER</p>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+{% endfor %}
+
+<div class="text-center my-5">
+    <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-sm mt-3">Home Page</a>
+</div>
+
+
+{% endblock content %}

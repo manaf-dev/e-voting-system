@@ -4,29 +4,36 @@
 
 {% block content %}
 
+<h1 class="text-center">{{election.name}}</h1>
 {% for position in positions %}
-<h1 class="text-center">{{ position.name }} Ballot</h1>
-<div class="container d-flex flex-column gap-3 flex-wrap justify-content-center flex-md-row">
-    {% for candidate in position.candidates.all %}
+    <h3 class="text-center">{{ position.name }} Ballot</h3>
+    <div class="container d-flex flex-column gap-3 flex-wrap justify-content-center flex-md-row">
+        {% for candidate in position.candidates.all %}
 
-    <form action="{% url 'vote-candidate' election_slug=election.slug candidate_id=candidate.id  position_id=position.id %}" method="GET">
-            {% if page_obj.has_next %}
-                <input type="hidden" name="ballot" value="{{ page_obj.next_page_number }}">
-            {% endif %}
-            <div class="card text-center mx-auto" style="width: 18rem;">
-                <img src="{{ candidate.profile_pic.url }}" class="card-img-top object-fit-cover" alt="{{candidate.user.get_full_name}} picture" height="255">
-                <div class="card-body">
-                    <h5 class="card-title">{{candidate.user.get_full_name}}</h5>
-                    <button class="btn btn-primary">Vote</button>
+        <form action="{% url 'vote-candidate' election_slug=election.slug candidate_id=candidate.id  position_id=position.id %}" method="GET">
+                {% if page_obj.has_next %}
+                    <input type="hidden" name="ballot" value="{{ page_obj.next_page_number }}">
+                {% endif %}
+                <div class="card text-center mx-auto" style="width: 18rem;">
+                    <img src="{{ candidate.profile_pic.url }}" class="card-img-top object-fit-cover" alt="{{candidate.user.get_full_name}} picture" height="255">
+                    <div class="card-body">
+                        <h5 class="card-title">{{candidate.user.get_full_name}}</h5>
+                        <button class="btn btn-primary">Vote</button>
+                    </div>
                 </div>
-            </div>
 
-        </form>
-    {%empty%}
-        <p>No contestant for this position</p>
-    {% endfor %}
-</div>
+            </form>
+        {%empty%}
+            <p>No contestant for this position</p>
+        {% endfor %}
+    </div>
+{%empty%}
+    <p>No candidates published by the EC yets</p>
 {% endfor %}
+
+<div class="my-5">
+    <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-sm mt-3">Home Page</a>
+</div>
 
 
 {% if is_paginated %}

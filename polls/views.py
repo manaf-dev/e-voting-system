@@ -3,6 +3,7 @@ from django.views.generic import ListView, CreateView, TemplateView
 from django.utils import timezone
 from django.urls import reverse
 from django.contrib import messages
+from django.db.models import Count
 
 from accounts.models import CustomUser
 from .models import Election, Position, Candidate, Vote
@@ -52,7 +53,8 @@ class BallotsView(ListView):
     page_kwarg = "ballot"
 
     def get_queryset(self):
-        queryset = Position.objects.all().order_by("id")
+        election = get_object_or_404(Election, slug=self.kwargs["election_slug"])
+        queryset = Position.objects.filter(candidates__election=election).order_by("id")
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -130,3 +132,51 @@ class VoteCompleteView(TemplateView):
             Election, slug=self.kwargs["election_slug"]
         )
         return context
+
+
+def vote_results(request, election_slug):
+    election = get_object_or_404(Election, slug=election_slug)
+    if not election.results_published:
+        messages.info(
+            request, "Voting still in progress. Results are not yet published"
+        )
+        return redirect("home")
+    positions = Position.objects.filter(candidates__election=election).distinct()
+
+    results = []
+    for position in positions:
+        candidates = Candidate.objects.filter(
+            election=election, position=position
+        ).annotate(vote_count=Count("votes"))
+        total_votes = Vote.objects.filter(election=election, position=position).count()
+
+        candidates_results = []
+        for candidate in candidates:
+            vote_count = candidate.vote_count
+            vote_percentage = (vote_count / total_votes) * 100 if total_votes > 0 else 0
+
+            candidates_results.append(
+                {
+                    "candidate": candidate,
+                    "vote_count": vote_count,
+                    "vote_percentage": vote_percentage,
+                }
+            )
+
+        if candidates_results:
+            winner = max(candidates_results, key=lambda x: x["vote_count"])
+            winner["is_winner"] = True
+        else:
+            winner = None
+
+        results.append(
+            {
+                "position": position,
+                "candidates": candidates_results,
+                "total_votes": total_votes,
+                # "winner": winner,
+            }
+        )
+
+    context = {"election": election, "results": results}
+    return render(request, "polls/results.html", context)
