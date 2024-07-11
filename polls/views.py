@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, CreateView, TemplateView
 from django.utils import timezone
 from django.urls import reverse
+from django.contrib import messages
 
 from accounts.models import CustomUser
 from .models import Election, Position, Candidate, Vote
@@ -56,7 +57,7 @@ class BallotsView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        election = Election.objects.get(slug=self.kwargs["election_slug"])
+        election = get_object_or_404(Election, slug=self.kwargs["election_slug"])
         context["election"] = election
         return context
 
@@ -87,7 +88,7 @@ class PreviewVotesView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(PreviewVotesView, self).get_context_data(**kwargs)
-        election = Election.objects.get(slug=self.kwargs["election_slug"])
+        election = get_object_or_404(Election, slug=self.kwargs["election_slug"])
         context["election"] = election
 
         selected_candidates = self.request.session.get("selected_candidates")
@@ -101,7 +102,7 @@ class PreviewVotesView(TemplateView):
 
 def submit_votes(request, election_slug):
     if request.method == "POST":
-        election = Election.objects.get(slug=election_slug)
+        election = get_object_or_404(Election, slug=election_slug)
 
         selected_candidates = request.session.get("selected_candidates")
         for position_id, candidate_id in selected_candidates.items():
@@ -114,10 +115,18 @@ def submit_votes(request, election_slug):
                 position=position,
             )
         request.session["selected_candidates"] = {}
-        return redirect("vote-complete")
+        messages.success(request, "You votes are submitted successfully!")
+        return redirect("vote-complete", election_slug)
 
     return redirect("home")
 
 
 class VoteCompleteView(TemplateView):
     template_name = "polls/vote_complete.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["election"] = get_object_or_404(
+            Election, slug=self.kwargs["election_slug"]
+        )
+        return context

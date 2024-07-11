@@ -4,17 +4,26 @@
 
 {% block content %}
 
-<h3>Preview Your Selections</h3>
+<h3 class="text-center text-bg-success p-3 w-25 m-auto">Preview Your Votes</h3>
 
 {% for position_id, candidate in selected_candidates.items %}
-    <p>{{ candidate.position.name }}: {{ candidate.user.get_full_name }}</p>
+    <h4 class="text-center mt-3">{{ candidate.position.name }}</h4>
+    <div class="card text-center mx-auto" style="width: 18rem;">
+        <img src="{{ candidate.profile_pic.url }}" class="card-img-top object-fit-cover" alt="{{candidate.user.get_full_name}} picture" height="255">
+        <div class="card-body">
+            <h5 class="card-title">{{candidate.user.get_full_name}}</h5>
+        </div>
+    </div>
 {% endfor %}
 
-<form action="{% url 'submit-votes' election_slug=election.slug %}" method="post">
-    {% csrf_token %}
-    <button type="submit">Submit Votes</button>
-</form>
+<div class="text-center my-5">
+    <form action="{% url 'submit-votes' election_slug=election.slug %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-success">Submit Votes</button>
+    </form>
 
-<a href="{% url 'ballots' election.slug %}?ballot=1">Go Back to Ballots</a>
+    <a href="{% url 'ballots' election.slug %}?ballot=1" class="btn btn-outline-secondary btn-sm mt-3">Go Back to Ballots</a>
+</div>
+
 
 {% endblock content %}

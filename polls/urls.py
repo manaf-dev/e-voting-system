@@ -21,5 +21,9 @@ urlpatterns = [
         views.submit_votes,
         name="submit-votes",
     ),
-    path("voting/complete/", VoteCompleteView.as_view(), name="vote-complete"),
+    path(
+        "<slug:election_slug>/complete/",
+        VoteCompleteView.as_view(),
+        name="vote-complete",
+    ),
 ]
