@@ -1,6 +1,13 @@
-{% extends "base.html" %} {% load static %}
+{% extends "base.html" %} {% load static %} 
+{% load custom_filters %}
 
 {% block title %}Ballots{% endblock title %}
+
+
+{% block header %}
+    {% include 'header.html' %}
+{% endblock header %}
+    
 
 {% block content %}
 
@@ -8,7 +15,7 @@
 {% for position in positions %}
     <h3 class="text-center">{{ position.name }} Ballot</h3>
     <div class="container d-flex flex-column gap-3 flex-wrap justify-content-center flex-md-row">
-        {% for candidate in position.candidates.all %}
+        {% for candidate in candidates_by_position|get_item:position %}
 
         <form action="{% url 'vote-candidate' election_slug=election.slug candidate_id=candidate.id  position_id=position.id %}" method="GET">
                 {% if page_obj.has_next %}
@@ -29,11 +36,11 @@
     </div>
 {%empty%}
     <p>No candidates published by the EC yets</p>
+    <div class="my-5">
+        <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-sm mt-3">Home Page</a>
+    </div>
 {% endfor %}
 
-<div class="my-5">
-    <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-sm mt-3">Home Page</a>
-</div>
 
 
 {% if is_paginated %}

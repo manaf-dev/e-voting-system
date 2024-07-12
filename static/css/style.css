@@ -2,4 +2,12 @@
   .home-row {
     max-width: 60%;
   }
+
+  .signin {
+    width: 25rem;
+  }
+}
+
+.signin {
+  margin-top: 4rem;
 }

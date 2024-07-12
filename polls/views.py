@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import ListView, CreateView, TemplateView
+from django.views.generic import ListView, TemplateView
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils import timezone
 from django.urls import reverse
 from django.contrib import messages
@@ -10,14 +12,14 @@ from .models import Election, Position, Candidate, Vote
 
 
 # Create your views here.
-class HomeView(ListView):
+class HomeView(LoginRequiredMixin, ListView):
     model = Election
     context_object_name = "elections"
     template_name = "polls/home.html"
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        queryset = Election.objects.filter(end_date__gt=timezone.now())
+        queryset = Election.objects.filter(end_date__gt=timezone.now()).order_by("-id")
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -44,9 +46,8 @@ def has_user_finished_voting(user, election):
     return positions == user_votes
 
 
-class BallotsView(ListView):
+class BallotsView(LoginRequiredMixin, ListView):
     model = Position
-    context_object_name = "candidates"
     template_name = "polls/ballots.html"
     context_object_name = "positions"
     paginate_by = 1
@@ -54,18 +55,36 @@ class BallotsView(ListView):
 
     def get_queryset(self):
         election = get_object_or_404(Election, slug=self.kwargs["election_slug"])
-        queryset = Position.objects.filter(candidates__election=election).order_by("id")
+        print(election)
+        queryset = (
+            Position.objects.filter(candidates__election=election)
+            .distinct()
+            .order_by("id")
+        )
+
+        # for i in queryset:
+        #     print(i)
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         election = get_object_or_404(Election, slug=self.kwargs["election_slug"])
+        positions = self.get_queryset()
+
         context["election"] = election
+        # context["positions"] = positions
+
+        candidates_by_position = {
+            position: Candidate.objects.filter(election=election, position=position)
+            for position in positions
+        }
+        print(candidates_by_position)
+        context["candidates_by_position"] = candidates_by_position
         return context
 
 
+@login_required
 def vote_candidate(request, election_slug, candidate_id, position_id):
-
     selected_candidates = request.session.get("selected_candidates", {})
     selected_candidates[str(position_id)] = candidate_id
     request.session["selected_candidates"] = selected_candidates
@@ -85,7 +104,7 @@ def vote_candidate(request, election_slug, candidate_id, position_id):
     # return redirect("home")
 
 
-class PreviewVotesView(TemplateView):
+class PreviewVotesView(LoginRequiredMixin, TemplateView):
     template_name = "polls/preview_votes.html"
 
     def get_context_data(self, **kwargs):
@@ -102,6 +121,7 @@ class PreviewVotesView(TemplateView):
         return context
 
 
+@login_required
 def submit_votes(request, election_slug):
     if request.method == "POST":
         election = get_object_or_404(Election, slug=election_slug)
@@ -123,7 +143,7 @@ def submit_votes(request, election_slug):
     return redirect("home")
 
 
-class VoteCompleteView(TemplateView):
+class VoteCompleteView(LoginRequiredMixin, TemplateView):
     template_name = "polls/vote_complete.html"
 
     def get_context_data(self, **kwargs):
@@ -134,6 +154,7 @@ class VoteCompleteView(TemplateView):
         return context
 
 
+@login_required
 def vote_results(request, election_slug):
     election = get_object_or_404(Election, slug=election_slug)
     if not election.results_published:
@@ -147,7 +168,7 @@ def vote_results(request, election_slug):
     for position in positions:
         candidates = Candidate.objects.filter(
             election=election, position=position
-        ).annotate(vote_count=Count("votes"))
+        ).annotate(vote_count=Count("candidate"))
         total_votes = Vote.objects.filter(election=election, position=position).count()
 
         candidates_results = []

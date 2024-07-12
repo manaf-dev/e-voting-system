@@ -1,0 +1,29 @@
+{% load static %}
+<header class="p-2 bg-light shadow mb-3">
+    <div class="container">
+      <div
+        class="d-flex flex-wrap align-items-center justify-content-between"
+      >
+        <a
+          href="/"
+          class="d-flex align-items-center text-white text-decoration-none"
+        >
+          <img src="{% static "imgs/gmsa-logo.png" %}" alt="gmsa-logo"
+          height="60">
+        </a>
+
+        <div class="text-end">
+          {% if user.is_authenticated %}
+          <form action="{% url 'logout' %}" method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-warning">Logout</button>
+          </form>
+          {% else %}
+          <a href="{% url 'login' %}" class="btn btn-outline-light me-2">
+            Login
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+</header>

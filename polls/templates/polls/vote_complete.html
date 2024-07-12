@@ -1,10 +1,16 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% load static %}
 
 {% block title %}Ballots{% endblock title %}
 
+{% block header %}
+    {% include 'header.html' %}
+{% endblock header %}
+
+
 {% block content %}
 
-<h3>End of {{ election.name }}</h3>
-<p>Thank you for taking part in the election process.</p>
-<a href="{% url 'home' %}" class="btn btn-secondary">Home page</a>
+    <h3>End of {{ election.name }}</h3>
+    <p>Thank you for taking part in the election process.</p>
+    <a href="{% url 'home' %}" class="btn btn-secondary">Home page</a>
+
 {% endblock content %}

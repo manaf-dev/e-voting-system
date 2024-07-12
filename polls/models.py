@@ -69,13 +69,13 @@ class Vote(models.Model):
         CustomUser, related_name="voters", on_delete=models.CASCADE
     )
     candidate = models.ForeignKey(
-        "Candidate", related_name="votes", on_delete=models.CASCADE
+        "Candidate", related_name="candidate", on_delete=models.CASCADE
     )
     election = models.ForeignKey(
-        "Election", related_name="votes", on_delete=models.CASCADE
+        "Election", related_name="election", on_delete=models.CASCADE
     )
     position = models.ForeignKey(
-        "Position", related_name="votes", on_delete=models.CASCADE
+        "Position", related_name="position", on_delete=models.CASCADE
     )
     timestamp = models.DateTimeField(auto_now_add=True)
 
