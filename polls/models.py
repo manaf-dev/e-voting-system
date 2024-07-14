@@ -3,6 +3,7 @@ from accounts.models import CustomUser
 from django.utils.text import slugify
 
 from PIL import Image
+import uuid
 
 
 # Create your models here.
@@ -20,6 +21,15 @@ class Election(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class VoteToken(models.Model):
+    token = models.UUIDField(default=uuid.uuid4, unique=True)
+    voter = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    election = models.ForeignKey("Election", on_delete=models.CASCADE)
+
+    def __str__(self):
+        return "Token"
 
 
 class Position(models.Model):
@@ -65,17 +75,15 @@ class Candidate(models.Model):
 
 
 class Vote(models.Model):
-    voter = models.ForeignKey(
-        CustomUser, related_name="voters", on_delete=models.CASCADE
-    )
+    token = models.ForeignKey("VoteToken", on_delete=models.CASCADE, default=101)
     candidate = models.ForeignKey(
-        "Candidate", related_name="candidate", on_delete=models.CASCADE
+        "Candidate", related_name="votes", on_delete=models.CASCADE
     )
     election = models.ForeignKey(
-        "Election", related_name="election", on_delete=models.CASCADE
+        "Election", related_name="votes", on_delete=models.CASCADE
     )
     position = models.ForeignKey(
-        "Position", related_name="position", on_delete=models.CASCADE
+        "Position", related_name="votes", on_delete=models.CASCADE
     )
     timestamp = models.DateTimeField(auto_now_add=True)
 
@@ -83,9 +91,9 @@ class Vote(models.Model):
         # unique_together = ('voter', 'position')
         constraints = [
             models.UniqueConstraint(
-                fields=["voter", "election", "position"], name="unique_voter_position"
+                fields=["token", "election", "position"], name="unique_voter_position"
             )
         ]
 
     def __str__(self):
-        return f"Vote for {self.election.name}"
+        return f"Vote for {self.candidate.user.username} in {self.election.name}"

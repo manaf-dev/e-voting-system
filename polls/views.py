@@ -8,7 +8,7 @@ from django.contrib import messages
 from django.db.models import Count
 
 from accounts.models import CustomUser
-from .models import Election, Position, Candidate, Vote
+from .models import Election, Position, Candidate, Vote, VoteToken
 
 
 # Create your views here.
@@ -40,10 +40,26 @@ def has_user_finished_voting(user, election):
     positions = (
         Position.objects.filter(candidates__election=election).distinct().count()
     )
-    user_votes = Vote.objects.filter(voter=user, election=election).count()
+    try:
+        token = VoteToken.objects.get(voter=user, election=election)
+    except Exception:
+        return False
+    user_votes = Vote.objects.filter(token=token, election=election).count()
     if not positions or not user_votes:
         return False
     return positions == user_votes
+
+
+def start_voting(request, election_slug):
+    election = get_object_or_404(Election, slug=election_slug)
+    try:
+        token = VoteToken.objects.get(voter=request.user, election=election)
+        print(token.token)
+        return redirect("ballots", election.slug)
+    except Exception:
+        token = VoteToken.objects.create(voter=request.user, election=election)
+        print(token.token)
+        return redirect("ballots", election.slug)
 
 
 class BallotsView(LoginRequiredMixin, ListView):
@@ -55,15 +71,11 @@ class BallotsView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         election = get_object_or_404(Election, slug=self.kwargs["election_slug"])
-        print(election)
         queryset = (
             Position.objects.filter(candidates__election=election)
             .distinct()
             .order_by("id")
         )
-
-        # for i in queryset:
-        #     print(i)
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -72,13 +84,11 @@ class BallotsView(LoginRequiredMixin, ListView):
         positions = self.get_queryset()
 
         context["election"] = election
-        # context["positions"] = positions
 
         candidates_by_position = {
             position: Candidate.objects.filter(election=election, position=position)
             for position in positions
         }
-        print(candidates_by_position)
         context["candidates_by_position"] = candidates_by_position
         return context
 
@@ -88,7 +98,7 @@ def vote_candidate(request, election_slug, candidate_id, position_id):
     selected_candidates = request.session.get("selected_candidates", {})
     selected_candidates[str(position_id)] = candidate_id
     request.session["selected_candidates"] = selected_candidates
-    print(request.session["selected_candidates"])
+    # print(request.session["selected_candidates"])
 
     next_page = request.GET.get("ballot")
     if not next_page:
@@ -130,14 +140,16 @@ def submit_votes(request, election_slug):
         for position_id, candidate_id in selected_candidates.items():
             position = get_object_or_404(Position, id=position_id)
             candidate = get_object_or_404(Candidate, id=candidate_id)
+            token = VoteToken.objects.get(voter=request.user, election=election)
+
             vote = Vote.objects.create(
-                voter=request.user,
+                token=token,
                 candidate=candidate,
                 election=election,
                 position=position,
             )
         request.session["selected_candidates"] = {}
-        messages.success(request, "You votes are submitted successfully!")
+        messages.success(request, "Your votes are submitted successfully!")
         return redirect("vote-complete", election_slug)
 
     return redirect("home")
@@ -168,7 +180,7 @@ def vote_results(request, election_slug):
     for position in positions:
         candidates = Candidate.objects.filter(
             election=election, position=position
-        ).annotate(vote_count=Count("candidate"))
+        ).annotate(vote_count=Count("votes"))
         total_votes = Vote.objects.filter(election=election, position=position).count()
 
         candidates_results = []

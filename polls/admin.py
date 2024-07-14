@@ -29,9 +29,16 @@ class CandidateAdmin(admin.ModelAdmin):
 class VoteAdmin(admin.ModelAdmin):
     """Admin View for Vote"""
 
-    list_display = ("candidate", "election", "position")
-    list_filter = (
-        "candidate",
-        "election",
-        "position",
-    )
+    list_display = ("election", "position")
+    list_filter = ("election", "position")
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        if obj is not None:
+            return False
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False

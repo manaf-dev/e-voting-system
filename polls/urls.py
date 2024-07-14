@@ -5,6 +5,7 @@ from . import views
 
 urlpatterns = [
     path("", HomeView.as_view(), name="home"),
+    path("<slug:election_slug>/start_voting/", views.start_voting, name="start-voting"),
     path("<slug:election_slug>/ballots/", BallotsView.as_view(), name="ballots"),
     path(
         "vote/<slug:election_slug>/<int:position_id>/<int:candidate_id>/",
