@@ -6,9 +6,14 @@ from django.utils import timezone
 from django.urls import reverse
 from django.contrib import messages
 from django.db.models import Count
+from django.contrib.admin.views.decorators import staff_member_required
+from django.conf import settings
 
 from accounts.models import CustomUser
 from .models import Election, Position, Candidate, Vote, VoteToken
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 # Create your views here.
@@ -148,6 +153,8 @@ def submit_votes(request, election_slug):
                 election=election,
                 position=position,
             )
+        logger.info(f"{request.user.first_name} has voted in {election.name}.")
+
         request.session["selected_candidates"] = {}
         messages.success(request, "Your votes are submitted successfully!")
         return redirect("vote-complete", election_slug)
@@ -213,3 +220,12 @@ def vote_results(request, election_slug):
 
     context = {"election": election, "results": results}
     return render(request, "polls/results.html", context)
+
+
+@staff_member_required
+def read_logs(request):
+    filename = settings.BASE_DIR / "info.log"
+    with open(filename, "r") as log_file:
+        log_content = log_file.read()
+    context = {"log_content": log_content}
+    return render(request, "admin/read_logs.html", context)
