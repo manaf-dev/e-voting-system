@@ -23,11 +23,9 @@ import io
 # Create your views here.
 
 
-# @login_required
-# def index(request):
-#     if not request.user.password_changed:
-#         return redirect("change_password")
-#     return redirect("home")
+@login_required
+def index(request):
+    return redirect("home")
 
 
 class HomeView(LoginRequiredMixin, ListView):
