@@ -17,10 +17,19 @@ from .models import Election, Position, Candidate, Vote, VoteToken
 import logging
 import io
 
-logger = logging.getLogger(__name__)
+# logger = logging.getLogger(__name__)
 
 
 # Create your views here.
+
+
+# @login_required
+# def index(request):
+#     if not request.user.password_changed:
+#         return redirect("change_password")
+#     return redirect("home")
+
+
 class HomeView(LoginRequiredMixin, ListView):
     model = Election
     context_object_name = "elections"

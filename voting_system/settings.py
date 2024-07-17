@@ -70,6 +70,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "accounts.middleware.force_password_change.ForcePasswordChangeMiddleware",
 ]
 
 ROOT_URLCONF = "voting_system.urls"
@@ -161,7 +162,7 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 # CRISPY_ALLOWED_TEMPLATE_PACK = 'bootstrap5'
 
 LOGIN_URL = "login"
-LOGIN_REDIRECT_URL = "home"
+LOGIN_REDIRECT_URL = "index"
 LOGOUT_REDIRECT_URL = "login"
 
 

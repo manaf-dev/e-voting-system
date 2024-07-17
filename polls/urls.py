@@ -4,8 +4,9 @@ from .views import HomeView, BallotsView, VoteCompleteView, PreviewVotesView
 from . import views
 
 urlpatterns = [
-    path("election/read_logs/", views.read_logs, name="read_logs"),
-    path("", HomeView.as_view(), name="home"),
+    # path("election/read_logs/", views.read_logs, name="read_logs"),
+    # path("", views.index, name="index"),
+    path("elections/", HomeView.as_view(), name="home"),
     path("<slug:election_slug>/start_voting/", views.start_voting, name="start-voting"),
     path("<slug:election_slug>/ballots/", BallotsView.as_view(), name="ballots"),
     path(

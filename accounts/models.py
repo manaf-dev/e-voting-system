@@ -5,6 +5,7 @@ from django.contrib.auth.models import AbstractUser
 # Create your models here.
 class CustomUser(AbstractUser):
     middle_name = models.CharField(max_length=150, blank=True)
+    password_changed = models.BooleanField(default=False)
 
     def get_full_name(self):
         """
