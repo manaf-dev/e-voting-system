@@ -8,10 +8,14 @@ from django.contrib import messages
 from django.db.models import Count
 from django.contrib.admin.views.decorators import staff_member_required
 from django.conf import settings
+from django.http import FileResponse
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
 
 from accounts.models import CustomUser
 from .models import Election, Position, Candidate, Vote, VoteToken
 import logging
+import io
 
 logger = logging.getLogger(__name__)
 
@@ -153,7 +157,7 @@ def submit_votes(request, election_slug):
                 election=election,
                 position=position,
             )
-        logger.info(f"{request.user.first_name} has voted in {election.name}.")
+        # logger.info(f"{request.user.first_name} has voted in {election.name}.")
 
         request.session["selected_candidates"] = {}
         messages.success(request, "Your votes are submitted successfully!")
@@ -228,4 +232,45 @@ def read_logs(request):
     with open(filename, "r") as log_file:
         log_content = log_file.read()
     context = {"log_content": log_content}
-    return render(request, "admin/read_logs.html", context)
+    return render(request, "logs.html", context)
+
+
+@staff_member_required
+def print_results(request, election_slug):
+    election = get_object_or_404(Election, slug=election_slug)
+    positions = Position.objects.filter(candidates__election=election).distinct()
+
+    buffer = io.BytesIO()
+    p = canvas.Canvas(buffer, letter)
+    p.setFont("Helvetica", 12)
+
+    width, height = letter
+
+    y = height - 40
+    p.drawString(
+        100,
+        y,
+        f"Results for {election.name}",
+    )
+    y -= 30
+
+    for position in positions:
+        candidates = position.candidates.filter(election=election)
+        p.drawString(100, y, f"Position: {position.name}")
+        y -= 20
+
+        for candidate in candidates:
+            vote_count = Vote.objects.filter(
+                election=election, position=position, candidate=candidate
+            ).count()
+            p.drawString(
+                120, y, f"{candidate.user.get_full_name()}: {vote_count} votes"
+            )
+            y -= 20
+
+        y -= 20  # Add extra space between positions
+
+    p.showPage()
+    p.save()
+    buffer.seek(0)
+    return FileResponse(buffer, as_attachment=True, filename="election_results.pdf")

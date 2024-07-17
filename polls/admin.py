@@ -1,14 +1,37 @@
 from django.contrib import admin
+from django.urls import path, reverse
+from django.utils.html import format_html
+
 from .models import Election, Position, Candidate, Vote
+from .views import read_logs
 
 
-# Register your models here.
+class ElectionAdminSite(admin.AdminSite):
+    site_header = "GMSA Election HQ"
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_url = [
+            path("read_logs/", self.admin_view(read_logs), name="read_logs"),
+        ]
+        return urls + custom_url
+
+
+# custom_admin_site = ElectionAdminSite()
 
 
 @admin.register(Election)
 class ElectionAdmin(admin.ModelAdmin):
-    list_display = ("name", "start_date", "end_date")
+    list_display = ("name", "start_date", "end_date", "read_logs", "print_results")
     prepopulated_fields = {"slug": ("name",)}
+
+    def print_results(self, obj):
+        return format_html(
+            '<a href="{}">Print Results</a>', reverse("print-results", args=[obj.slug])
+        )
+
+    def read_logs(self, obj):
+        return format_html('<a href="{}">Read Logs</a>', reverse("read_logs"))
 
 
 @admin.register(Position)
@@ -31,6 +54,7 @@ class VoteAdmin(admin.ModelAdmin):
 
     list_display = ("election", "position")
     list_filter = ("election", "position")
+    fields = ["election", "position"]
 
     def has_add_permission(self, request):
         return False

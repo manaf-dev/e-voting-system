@@ -4,6 +4,7 @@ from .views import HomeView, BallotsView, VoteCompleteView, PreviewVotesView
 from . import views
 
 urlpatterns = [
+    path("election/read_logs/", views.read_logs, name="read_logs"),
     path("", HomeView.as_view(), name="home"),
     path("<slug:election_slug>/start_voting/", views.start_voting, name="start-voting"),
     path("<slug:election_slug>/ballots/", BallotsView.as_view(), name="ballots"),
@@ -31,5 +32,10 @@ urlpatterns = [
         "<slug:election_slug>/results/",
         views.vote_results,
         name="vote-results",
+    ),
+    path(
+        "<slug:election_slug>/print-results/",
+        views.print_results,
+        name="print-results",
     ),
 ]
