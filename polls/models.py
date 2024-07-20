@@ -14,6 +14,7 @@ class Election(models.Model):
     end_date = models.DateTimeField()
     slug = models.SlugField(max_length=255, blank=True, null=True)
     results_published = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)

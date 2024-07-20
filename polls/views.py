@@ -35,7 +35,7 @@ class HomeView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        queryset = Election.objects.filter(end_date__gt=timezone.now()).order_by("-id")
+        queryset = Election.objects.filter(is_active=True).order_by("-id")
         return queryset
 
     def get_context_data(self, **kwargs):
