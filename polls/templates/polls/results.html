@@ -9,7 +9,7 @@
 
 {% block content %}
 
-<h3 class="text-center text-bg-success p-3 w-50 m-auto">Votes Results for {{election.name}}</h3>
+<h3 class="text-center text-bg-success p-3 m-auto">{{election.name|upper}} RESULTS</h3>
 
 {% for result in results %}
 <h4 class="text-center mt-3">{{ result.position.name }}</h4>
@@ -25,6 +25,9 @@
 
                 {% if candidate_result.is_winner %}
                     <p class="fs-4 fw-bold text-success text-center">WINNER</p>
+                {% endif %}
+                {% if candidate_result.is_tie %}
+                    <p class="fs-4 fw-bold text-success text-center">IT'S A TIE</p>
                 {% endif %}
             </div>
         </div>

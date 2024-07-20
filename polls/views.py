@@ -139,6 +139,7 @@ class PreviewVotesView(LoginRequiredMixin, TemplateView):
         context["election"] = election
 
         selected_candidates = self.request.session.get("selected_candidates")
+
         context["selected_candidates"] = {
             position_id: Candidate.objects.get(id=candidate_id)
             for position_id, candidate_id in selected_candidates.items()
@@ -215,17 +216,29 @@ def vote_results(request, election_slug):
             )
 
         if candidates_results:
-            winner = max(candidates_results, key=lambda x: x["vote_count"])
-            winner["is_winner"] = True
-        else:
-            winner = None
+            max_vote_count = max(count["vote_count"] for count in candidates_results)
+            winners = [
+                result
+                for result in candidates_results
+                if result["vote_count"] == max_vote_count
+            ]
+
+            if len(winners) > 1:
+                for candidate in candidates_results:
+                    candidate["is_tie"] = candidate in winners
+                    candidate["is_winner"] = False
+            else:
+                for candidate in candidates_results:
+                    candidate["is_tie"] = False
+                    candidate["is_winner"] = candidate in winners
+
+        # print(candidates_results)
 
         results.append(
             {
                 "position": position,
                 "candidates": candidates_results,
                 "total_votes": total_votes,
-                # "winner": winner,
             }
         )
 

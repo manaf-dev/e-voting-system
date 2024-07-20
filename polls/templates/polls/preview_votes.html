@@ -10,7 +10,9 @@
 
 {% block content %}
 
-<h3 class="text-center text-bg-success p-3 w-25 m-auto">Preview Your Votes</h3>
+<div class="w-auto m-auto p-3">
+    <h2 class="text-center text-success text-decoration-underline fw-bold">Preview Your Votes</h2>
+</div>
 
 {% for position_id, candidate in selected_candidates.items %}
     <h4 class="text-center mt-3">{{ candidate.position.name }}</h4>
