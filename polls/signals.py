@@ -15,12 +15,12 @@ def prevent_vote_change_receiver(sender, instance, **kwargs):
         raise ValueError("Change of votes is not allowed.")
 
 
-@receiver(signal=pre_delete, sender=Vote)
-def prevent_vote_delete_receiver(sender, instance, **kwargs):
-    raise ValueError("Delete of votes is not allowed.")
+# @receiver(signal=pre_delete, sender=Vote)
+# def prevent_vote_delete_receiver(sender, instance, **kwargs):
+#     raise ValueError("Delete of votes is not allowed.")
 
 
-@receiver(signal=post_save, sender=CustomUser)
-def add_new_user(sender, instance, created, **kwargs):
-    if created:
-        logger.info(f"Admin added {instance.first_name} {instance.last_name}")
+# @receiver(signal=post_save, sender=CustomUser)
+# def add_new_user(sender, instance, created, **kwargs):
+#     if created:
+#         logger.info(f"Admin added {instance.first_name} {instance.last_name}")

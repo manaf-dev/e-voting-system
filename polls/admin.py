@@ -22,16 +22,16 @@ class ElectionAdminSite(admin.AdminSite):
 
 @admin.register(Election)
 class ElectionAdmin(admin.ModelAdmin):
-    list_display = ("name", "start_date", "end_date", "read_logs", "print_results")
+    list_display = ("name", "start_date", "end_date", "view_results")
     prepopulated_fields = {"slug": ("name",)}
 
-    def print_results(self, obj):
+    def view_results(self, obj):
         return format_html(
-            '<a href="{}">Print Results</a>', reverse("print-results", args=[obj.slug])
+            '<a href="{}">View Results</a>', reverse("vote-results", args=[obj.slug])
         )
 
-    def read_logs(self, obj):
-        return format_html('<a href="{}">Read Logs</a>', reverse("read_logs"))
+    # def read_logs(self, obj):
+    #     return format_html('<a href="{}">Read Logs</a>', reverse("read_logs"))
 
 
 @admin.register(Position)

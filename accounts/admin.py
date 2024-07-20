@@ -17,9 +17,15 @@ class CustomUserAdmin(UserAdmin):
     list_display = (
         "username",
         "first_name",
-        "middle_name",
         "last_name",
         "password_changed",
+        "level",
+    )
+    list_filter = ("password_changed",)
+    search_fields = (
+        "username",
+        "first_name",
+        "last_name",
     )
 
     fieldsets = (
@@ -33,6 +39,7 @@ class CustomUserAdmin(UserAdmin):
                     "last_name",
                     "email",
                     "password_changed",
+                    "level",
                 )
             },
         ),
