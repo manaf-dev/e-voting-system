@@ -5,7 +5,11 @@
 
 {% block content %}
 
-<div class="signin mx-auto py-4 px-2 shadow">
+<div class="alert alert-warning w-100 w-md-50 mt-5" role="alert" style="padding:0.4rem;">
+  <strong>INFO:</strong> You can ONLY login and vote if you have paid your dues to GMSA!
+</div>
+
+<div class="signin mx-auto pb-4 px-2 shadow" style="margin-top:2rem;">
   <div class="text-center">
     <img src="{% static 'imgs/gmsa-logo.png' %}" alt="gmsa-logo" height="72">
     <h2 class="h3 mt-2 mb-3 fw-normal"">Login</h2>
