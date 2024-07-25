@@ -68,6 +68,14 @@ def has_user_finished_voting(user, election):
 
 def start_voting(request, election_slug):
     election = get_object_or_404(Election, slug=election_slug)
+    start_time = election.start_date.strftime("%I:%M %p")
+    start_date = election.start_date.strftime("%A, %x")
+    if election.start_date > timezone.now():
+        messages.info(
+            request,
+            f"Sorry! {election.name} is scheduled to start at {start_time} on {start_date}, see you then.",
+        )
+        return redirect("home")
     try:
         token = VoteToken.objects.get(voter=request.user, election=election)
         print(token.token)

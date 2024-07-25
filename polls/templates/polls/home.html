@@ -10,7 +10,9 @@
 {% block content %}
 
 {% if request.user.is_staff %}
-    <a href="{% url 'admin:index' %}" class="btn btn-outline-secondary">Go to Admin Page</a>
+    <a href="{% url 'admin:index' %}" class="btn btn-outline-secondary mb-3">Go to Admin Page</a>
+    <a href="{% url 'add-voters' %}" class="btn btn-secondary mb-3">Add Voters</a>
+    
 {% endif %}
 
 <div class="row home-row row-cols-1 d-flex flex-column w-100 w-md-50 m-auto text-center">
@@ -22,18 +24,31 @@
     <div class="col mt-3">
       <div class="card mb-4 rounded-3 shadow-sm border-success">
         <div class="card-header py-3 text-bg-success border-success">
-          <h4 class="my-0 fw-normal">Current Election</h4>
+          
+          {% if election_status.election.results_published %}
+          <h4 class="my-0 fw-normal">Just ended Election</h4>
+          {% else %}
+          <h4 class="my-0 fw-normal">Active Election</h4>
+          {% endif %}
+            
         </div>
         <div class="card-body">
           <h1 class="card-title">{{election_status.election.name}}</h1>
           <p class="mt-3 mb-4 text-muted">
             {{election_status.election.description}}
+            Click on View Results to see the election results.
           </p>
+
           {% if election_status.status == True %}
-          
+          <p class="m-3 text-muted">
+            <strong>Click on <em>View Results</em> to see the election results.</strong>
+          </p>
           <a href="{% url 'vote-results' election_status.election.slug %}" class="w-100 btn btn-lg btn-outline-success">View Results</a>
           
           {% else %}
+          <p class="m-3 text-muted">
+            <strong>Click on <em>Start Voting</em> to cast your vote.</strong>
+          </p>
           
           <a href="{% url 'start-voting' election_status.election.slug %}" class="w-100 btn btn-lg btn-success">Start Voting</a>
           
