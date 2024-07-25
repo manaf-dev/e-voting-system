@@ -22,12 +22,16 @@
   <body class="bg-slate">
     {% block header %} {% endblock header %}
 
-    <main class="container">
-      {% if messages %} {% for message in messages %}
+    <main class="container" style="padding-bottom:2rem">
+      {% if messages %} 
+      {% for message in messages %}
       <div class="alert alert-{{message.tags}} w-100 w-md-50" role="alert">
         {{message}}
       </div>
-      {% endfor %} {% endif %} {% block content %} {% endblock content %}
+      {% endfor %} 
+      {% endif %} 
+      
+      {% block content %} {% endblock content %}
     </main>
     <footer class="footer">
       <p>Developed by <a href="https://youtube.com/@techrems" target="_blank">Tech Rems</a></p>
