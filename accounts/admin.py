@@ -21,7 +21,7 @@ class CustomUserAdmin(UserAdmin):
         "password_changed",
         "level",
     )
-    list_filter = ("password_changed",)
+    list_filter = ("password_changed", "level")
     search_fields = (
         "username",
         "first_name",
@@ -67,6 +67,7 @@ class CustomUserAdmin(UserAdmin):
                     "first_name",
                     "middle_name",
                     "last_name",
+                    "level",
                     "password1",
                     "password2",
                 ),
