@@ -10,7 +10,8 @@
 {% block content %}
 
 <h3 class="text-center text-bg-success p-3 m-auto">{{election.name|upper}} RESULTS</h3>
-
+<h4>Total Voters: {{total_voters}}</h4>
+<h4>Total Turn Out: {{total_turn_out}}</h4>
 {% for result in results %}
 <h4 class="text-center mt-3">{{ result.position.name }}</h4>
 

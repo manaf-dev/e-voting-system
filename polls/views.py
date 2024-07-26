@@ -280,8 +280,14 @@ def vote_results(request, election_slug):
                 "total_votes": total_votes,
             }
         )
-
-    context = {"election": election, "results": results}
+    total_voters = CustomUser.objects.all().count()
+    total_turn_out = Vote.objects.filter(election=election).count()
+    context = {
+        "election": election,
+        "results": results,
+        "total_voters": total_voters,
+        "total_turn_out": total_turn_out,
+    }
     return render(request, "polls/results.html", context)
 
 
