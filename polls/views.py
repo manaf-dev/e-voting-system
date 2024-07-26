@@ -79,7 +79,7 @@ def start_voting(request, election_slug):
     elif election.end_date < timezone.now():
         messages.info(
             request,
-            f"Voting for {election.name} has endend. This is the results.",
+            f"Voting for {election.name} has endend.",
         )
         return redirect("vote-results", election.slug)
 
@@ -235,9 +235,7 @@ class VoteCompleteView(LoginRequiredMixin, TemplateView):
 def vote_results(request, election_slug):
     election = get_object_or_404(Election, slug=election_slug)
     if not election.results_published:
-        messages.info(
-            request, "Voting still in progress. Results are not yet published"
-        )
+        messages.info(request, f"Results for {election.name} are not yet published")
         return redirect("home")
     positions = Position.objects.filter(candidates__election=election).distinct()
 
