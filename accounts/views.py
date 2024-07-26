@@ -34,6 +34,9 @@ def add_new_voters(request):
         last_name = request.POST.get("last_name")
         level = request.POST.get("level")
 
+        if CustomUser.objects.filter(username=username).exists():
+            messages.warning(request, f"{username} exists in the voters register!")
+            return redirect("add-voters")
         user = CustomUser.objects.create_user(
             username=username,
             first_name=first_name,
