@@ -78,7 +78,11 @@ class Candidate(models.Model):
 class Vote(models.Model):
     token = models.ForeignKey("VoteToken", on_delete=models.CASCADE, default=101)
     candidate = models.ForeignKey(
-        "Candidate", related_name="votes", on_delete=models.CASCADE
+        "Candidate",
+        related_name="votes",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
     )
     election = models.ForeignKey(
         "Election", related_name="votes", on_delete=models.CASCADE

@@ -15,6 +15,11 @@ urlpatterns = [
         name="vote-candidate",
     ),
     path(
+        "vote-no/<slug:election_slug>/<int:position_id>/<int:ballot>/",
+        views.vote_candidate_no,
+        name="vote-no",
+    ),
+    path(
         "<slug:election_slug>/preview/",
         PreviewVotesView.as_view(),
         name="preview-votes",

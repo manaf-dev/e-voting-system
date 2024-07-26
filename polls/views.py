@@ -138,6 +138,24 @@ def vote_candidate(request, election_slug, candidate_id, position_id):
     # return redirect("home")
 
 
+def vote_candidate_no(request, election_slug, ballot, position_id):
+    if ballot:
+        selected_candidates = request.session.get("selected_candidates", {})
+        selected_candidates[str(position_id)] = "NULL"
+        request.session["selected_candidates"] = selected_candidates
+
+        if ballot == 100:
+            return redirect(
+                "preview-votes",
+                election_slug,
+            )
+        return redirect(
+            reverse("ballots", kwargs={"election_slug": election_slug})
+            + f"?ballot={ballot}"
+        )
+    return redirect(request.path)
+
+
 class PreviewVotesView(LoginRequiredMixin, TemplateView):
     template_name = "polls/preview_votes.html"
 
@@ -151,6 +169,7 @@ class PreviewVotesView(LoginRequiredMixin, TemplateView):
         context["selected_candidates"] = {
             position_id: Candidate.objects.get(id=candidate_id)
             for position_id, candidate_id in selected_candidates.items()
+            if candidate_id != "NULL"
         }
 
         return context
@@ -164,15 +183,27 @@ def submit_votes(request, election_slug):
         selected_candidates = request.session.get("selected_candidates")
         for position_id, candidate_id in selected_candidates.items():
             position = get_object_or_404(Position, id=position_id)
-            candidate = get_object_or_404(Candidate, id=candidate_id)
+            candidate = (
+                "NULL"
+                if candidate_id == "NULL"
+                else get_object_or_404(Candidate, id=candidate_id)
+            )
             token = VoteToken.objects.get(voter=request.user, election=election)
 
-            vote = Vote.objects.create(
-                token=token,
-                candidate=candidate,
-                election=election,
-                position=position,
-            )
+            if candidate == "NULL":
+                vote = Vote.objects.create(
+                    token=token,
+                    election=election,
+                    position=position,
+                )
+            else:
+                vote = Vote.objects.create(
+                    token=token,
+                    candidate=candidate,
+                    election=election,
+                    position=position,
+                )
+
         # logger.info(f"{request.user.first_name} has voted in {election.name}.")
 
         request.session["selected_candidates"] = {}

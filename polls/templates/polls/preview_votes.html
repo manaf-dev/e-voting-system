@@ -15,6 +15,7 @@
 </div>
 
 {% for position_id, candidate in selected_candidates.items %}
+    <p class="text-center text-muted"><em>If you've voted NO for a candidate, he/she will not be in your preview</em></p>
     <h4 class="text-center mt-3">{{ candidate.position.name }}</h4>
     <div class="card text-center mx-auto" style="width: 18rem;">
         <img src="{{ candidate.profile_pic.url }}" class="card-img-top object-fit-cover" alt="{{candidate.user.get_full_name}} picture" height="255">
@@ -22,6 +23,8 @@
             <h5 class="card-title">{{candidate.user.get_full_name}}</h5>
         </div>
     </div>
+{%empty%}
+    <p><em>You voted NO for all Candidates. Submit to end</em></p>
 {% endfor %}
 
 <div class="text-center my-5">
