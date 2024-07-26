@@ -12,10 +12,10 @@
 
 <div class="w-auto m-auto p-3">
     <h2 class="text-center text-success text-decoration-underline fw-bold">Preview Your Votes</h2>
+    <p class="text-center text-muted"><em>If you've voted NO for a candidate, he/she will not be in your preview</em></p>
 </div>
 
 {% for position_id, candidate in selected_candidates.items %}
-    <p class="text-center text-muted"><em>If you've voted NO for a candidate, he/she will not be in your preview</em></p>
     <h4 class="text-center mt-3">{{ candidate.position.name }}</h4>
     <div class="card text-center mx-auto" style="width: 18rem;">
         <img src="{{ candidate.profile_pic.url }}" class="card-img-top object-fit-cover" alt="{{candidate.user.get_full_name}} picture" height="255">
