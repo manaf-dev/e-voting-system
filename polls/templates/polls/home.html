@@ -38,7 +38,7 @@
             {{election_status.election.description}}
           </p>
 
-          {% if election_status.status == True %}
+          {% if election_status.status == True or election_status.election.results_published %}
           <p class="m-3 text-muted">
             <strong>Click on <em>View Results</em> to see the election results.</strong>
           </p>

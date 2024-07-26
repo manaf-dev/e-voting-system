@@ -76,6 +76,13 @@ def start_voting(request, election_slug):
             f"Sorry! {election.name} is scheduled to start at {start_time} on {start_date}, see you then.",
         )
         return redirect("home")
+    elif election.end_date < timezone.now():
+        messages.info(
+            request,
+            f"Voting for {election.name} has endend. This is the results.",
+        )
+        return redirect("vote-results", election.slug)
+
     try:
         token = VoteToken.objects.get(voter=request.user, election=election)
         print(token.token)
