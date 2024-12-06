@@ -17,7 +17,8 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" href="{% static "css/style.css" %}">
-    <title>GMSA Voting System | {% block title %}{% endblock title %}</title>
+    {% block custom-style %}{% endblock custom-style %}
+    <title>AAMUSTED GMSA | {% block title %}{% endblock title %}</title>
   </head>
   <body class="bg-slate">
     {% block header %} {% endblock header %}

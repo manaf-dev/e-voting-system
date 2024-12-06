@@ -1,0 +1,141 @@
+body {
+    background-color: #f8fff4;
+}
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+.card:hover {
+    transform: translateY(-5px);
+    transition: all 0.3s ease;
+}
+.btn-check-status {
+    border-radius: 30px;
+    font-size: 16px;
+}
+hr {
+    border: 1px solid #ddd;
+}
+a {
+    text-decoration: none;
+}
+
+.form-control {
+    border-radius: 30px;
+    border: 1px solid #ccc;
+}
+.btn-proceed,
+.btn-back,
+.btn-confirm {
+    border-radius: 30px;
+    font-size: 16px;
+}
+.btn-proceed {
+    background-color: #000;
+    color: #fff;
+}
+.btn-back {
+    background-color: #f5f5f5;
+    color: #000;
+}
+.btn-proceed:hover {
+    background-color: #444;
+}
+.btn-back:hover {
+    background-color: #ddd;
+}
+
+.details-card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    background-color: #fff;
+}
+
+.btn-confirm {
+    background-color: #4caf50;
+    color: #fff;
+}
+.btn-confirm:hover {
+    background-color: #45a047;
+}
+
+.detail-title {
+    font-weight: bold;
+    color: #4caf50;
+}
+
+.waiting-card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    background-color: #fff;
+    text-align: center;
+}
+.spinner {
+    margin: 20px auto;
+    width: 3rem;
+    height: 3rem;
+}
+.btn-check-status {
+    border-radius: 30px;
+    font-size: 16px;
+    background-color: #4caf50;
+    color: #fff;
+}
+.btn-check-status:hover {
+    background-color: #45a047;
+}
+.info-text {
+    color: #666;
+}
+
+.success-card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    background-color: #fff;
+    text-align: center;
+}
+.btn-home {
+    border-radius: 30px;
+    font-size: 16px;
+    background-color: #4caf50;
+    color: #fff;
+}
+.btn-home:hover {
+    background-color: #45a047;
+}
+.success-icon {
+    font-size: 3rem;
+    color: #4caf50;
+}
+
+.failed-card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    background-color: #fff;
+    text-align: center;
+}
+.btn-try-again {
+    border-radius: 30px;
+    font-size: 16px;
+    background-color: #f44336;
+    color: #fff;
+}
+.btn-try-again:hover {
+    background-color: #e53935;
+}
+
+.failed-icon {
+    font-size: 3rem;
+    color: #f44336;
+}

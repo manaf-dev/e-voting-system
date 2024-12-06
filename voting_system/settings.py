@@ -58,8 +58,9 @@ INSTALLED_APPS = [
     "crispy_bootstrap5",
     "storages",
     # custom apps
-    "polls.apps.PollsConfig",
     "accounts.apps.AccountsConfig",
+    "payments.apps.PaymentsConfig",
+    "polls.apps.PollsConfig",
 ]
 
 MIDDLEWARE = [
@@ -208,3 +209,6 @@ DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 #         },
 #     },
 # }
+
+PAYSTACK_SECRET_KEY = os.getenv("PAYSTACK_SECRET_KEY")
+PAYSTACK_PUBLIC_KEY = os.getenv("PAYSTACK_PUBLIC_KEY")
