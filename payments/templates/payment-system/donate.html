@@ -1,0 +1,79 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+            crossorigin="anonymous"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css"
+            integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+        />
+        <link rel="stylesheet" href="./style.css" />
+        <title>Donation Hub</title>
+    </head>
+    <body class="d-flex justify-content-center align-items-center body">
+        <div class="container">
+            <form class="px-3" style="font-size: 12px">
+                <h1 class="text-center mt-3">Donate to GMSA</h1>
+                <p class="text-center">Kindly fill the fields below</p>
+                <input
+                    type="number"
+                    class="form-control"
+                    id="number"
+                    placeholder="MoMo Number"
+                    required
+                />
+
+                <p>The number you will use for payment</p>
+                <input
+                    type="number"
+                    class="form-control"
+                    id="amount"
+                    placeholder="Amount "
+                    required
+                />
+                <p>Enter the payment amount</p>
+                <div>
+                    <label for="network-provider">Network Provider</label>
+                    <select class="form-select" required>
+                        <option value="" disabled selected>
+                            Select network
+                        </option>
+                        <option value="mtn">MTN</option>
+                        <option value="vodafone">Telecel</option>
+                        <option value="airteltigo">AirtelTigo</option>
+                    </select>
+                </div>
+                <br />
+                <button
+                    id="proceed"
+                    type="button"
+                    class="btn btn-dark btn-sm d-block mx-auto mt-4"
+                >
+                    Confirm Payment
+                </button>
+                <button
+                    type="button"
+                    class="btn btn-secondary btn-sm d-block mx-auto border border-black mt-4"
+                >
+                    Go Back
+                </button>
+            </form>
+        </div>
+
+        <script src="./script.js"></script>
+
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"
+        ></script>
+    </body>
+</html>
